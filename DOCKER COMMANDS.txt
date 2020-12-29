@@ -10,26 +10,118 @@
 Перегрузить контейнер
   docker restart CONTAINER ID
 
-ЧПосмотреть работающие контейнеры
-  docker ps
+Просмотр images (какие есть образы локально)
+===============
 
-Посмотреть вообще все контейнеры
-  docker ps -a
+	sudo docker images
 
-Посмотреть список всех образов
-  docker images
+Просмотр запущенных контейнеров
+================================
 
-Удалить образ
-  docker rmi CONTAINER ID
-или
-  docker rmi -f CONTAINER ID
+	sudo docker ps
+	
+Просмотр всех контейнеров
+================================
+
+	sudo docker ps -a	
+
+Создадим образ, укажем имя, укажем путь от куда будем собирать где:
+Создадим образ - docker build
+тег на имя - -t hello-world
+от куда собираем, укажем текущая директория как точка- .
+==============================================================
+
+	sudo docker build -t hello-world .
+	
+Запуск контейнера
+=============
+
+	sudo docker run <name repository or image id>
+	
+	
+Запуск контейнера с присвоенным ему именем
+===========================================
+
+	sudo docker run --name <new name> <name repository or image id> 
+	
+либо запуск контейнера в фоне (-d)
+
+	sudo docker run -name <new name> -d <name repository or image id>
+	
+Запустить контейнер и после остановки автоматом удалить его (--rm)
+==============================================================
+
+	sudo docker run -name <new name> -d --rm <name repository or image id>
+	
+Запустить контейнер на определенном порту	
+===========================================
+	
+	sudo docker run --rm --name web -p 8080:8080 web-hello
+	
+Запустить контейнер с указанием временной зоны
+===============================================
+
+	sudo docker run --rm --name web -p 8080:8080 -e TZ=Europe/Moskow web-hello
+	
+Посмотреть абсолютный путь к папке
+===================================
+
+	(venv) mihail@mihail-desktop:~/Django_projects/Docker training/web-hello-world$ cd resourses/
+	(venv) mihail@mihail-desktop:~/Django_projects/Docker training/web-hello-world/resourses$ pwd
+	/home/mihail/Django_projects/Docker training/web-hello-world/resourses
+	
+Запустить контейнер с указанием пути где будут меняться данные
+==============================================================
+где:
+путь хостовой машины от куда будут браться данные (-v /home/mihail/Django_projects/Docker training/web-hello-world/resourses)
+абсолютный путь внутри docker контейнера, указанный куда копируются данные контейнера, указано в файле "Dockerfile" - /usr/src/app/ плюс папка где происходят изменения
+========================================================================================================================================================================
+
+	sudo docker run --rm --name web -p 8080:8080 -e TZ=Europe/Moskow -v /home/mihail/Django_projects/Docker training/web-hello-world/resourses:/usr/src/app/resourses  web-hello
+
+Просмотр docker volume
+=========================
+
+	sudo docker volume ls
+	
+Создание docker volume
+=======================
+
+	sudo docker volume create web
+
+Прикрепим к docker volem web
+в котором будут сохраняться данные
+==================================
+	
+	sudo docker run --rm --name web -p 8080:8080 -e TZ=Europe/Moskow -v web:/usr/src/app/resourses  web-hello
+
+Остановить запущенный контейнер
+===============================
+
+	sudo docker stop <container id or names>
+	
+Удалить контейнер из списков
+============================
+
+	sudo docker rm <container id or names>	
+	
+Удалить все контейнеры из списков
+=================================
+
+	sudo docker rm $(sudo docker ps -qa)
+	
+Удаление всех образов
+=====================
+
+	docker rmi $(docker images -a -q)
+
+Удаление одного или нескольких конкретных образов
+==================================================
+
+	docker rmi <Image id or name>
 
 Иногда может понадобиться зайти в работающий контейнер. Для этого нужно запустить команду запуска интерактивной оболочкой bash
   docker exec -it CONTAINER ID bash
-
-
-#-------------------------------------------------
-# Introduction to Docker by Denis Astahov
 
 
 Install Docker on Ubuntu 18.04
